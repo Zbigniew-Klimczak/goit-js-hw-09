@@ -6,25 +6,40 @@ const dateHours = document.querySelector('[data-hours]');
 const dateMinutes = document.querySelector('[data-minutes]');
 const dateSeconds = document.querySelector('[data-seconds]');
 const startButton = document.querySelector('[data-start]');
-const dateActual = new Date();
 startButton.disabled = true;
 let calendar = flatpickr(dateInput, {
-  defaultDate: dateActual,
-  dateFormat: 'Y-m-d H:i',
-  onChange: selectedDates => {
-    if (selectedDates[0] <= dateActual) {
+  enableTime: true,
+  defaultDate: new Date(),
+  time_24hr: true,
+  minuteIncrement: 1,
+  onClose: selectedDates => {
+    if (selectedDates[0] <= new Date()) {
       startButton.disabled = true;
-      return console.log('Choose date in future');
+      window.alert('Please choose a date in the future');
+      calendar.setDate(new Date());
     } else {
       startButton.disabled = false;
     }
   },
 });
-startButton.addEventListener('click', dateCalculator());
+let dateTimer = null;
+startButton.addEventListener('click', () => {
+  startButton.disabled = true;
+  dateInput.disabled = true;
+  dateTimer = setInterval(dateCalculator, 1000);
+});
 function dateCalculator() {
-  let dateActualization = new Date();
-  let dateRemaining = calendar.selectedDates[0] - dateActualization;
-  dateDays.textContent = `${dateRemaining}`;
-  console.log(dateRemaining);
+  let dateChosen = calendar.selectedDates[0].getTime();
+  let dateActual = new Date().getTime();
+  let dateDifferenceSeconds = Math.floor((dateChosen - dateActual) / 1000);
+  let dateLeftDays = Math.floor(dateDifferenceSeconds / (24 * 60 * 60));
+  let dateLeftSeconds = dateDifferenceSeconds - dateLeftDays * 24 * 60 * 60;
+  let dateLeftHours = Math.floor(dateLeftSeconds / (60 * 60));
+  dateLeftSeconds = dateLeftSeconds - dateLeftHours * (60 * 60);
+  let dateLeftMinutes = Math.floor(dateLeftSeconds / 60);
+  dateLeftSeconds = dateLeftSeconds - dateLeftMinutes * 60;
+  dateDays.textContent = dateLeftDays;
+  dateHours.textContent = dateLeftHours;
+  dateMinutes.textContent = dateLeftMinutes;
+  dateSeconds.textContent = dateLeftSeconds;
 }
-console.log(calendar.selectedDates[0].getTime().getDate());
