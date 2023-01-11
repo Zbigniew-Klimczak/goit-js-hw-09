@@ -16,3 +16,17 @@ img {
   display: block;
   max-width: 100%;
 }
+.bodyButtons {
+  text-align: center;
+}
+.startStopButtons {
+  max-height: 100px;
+  max-width: 200px;
+  width: 40vw;
+  height: 15vh;
+  margin-top: 40vh;
+  font-size: 40px;
+  font-weight: 700;
+  background-color: rgb(225, 109, 19);
+  border-radius: 5px;
+}
