@@ -1,5 +1,9 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import Notiflix from 'notiflix';
+Notiflix.Notify.init({
+  position: 'center-top',
+});
 const dateInput = document.querySelector('#datetime-picker');
 const dateDays = document.querySelector('[data-days]');
 const dateHours = document.querySelector('[data-hours]');
@@ -15,7 +19,7 @@ let calendar = flatpickr(dateInput, {
   onClose: selectedDates => {
     if (selectedDates[0] <= new Date()) {
       startButton.disabled = true;
-      window.alert('Please choose a date in the future');
+      Notiflix.Notify.warning('Please choose a date in the future');
       calendar.setDate(new Date());
     } else {
       startButton.disabled = false;
@@ -31,15 +35,32 @@ startButton.addEventListener('click', () => {
 function dateCalculator() {
   let dateChosen = calendar.selectedDates[0].getTime();
   let dateActual = new Date().getTime();
-  let dateDifferenceSeconds = Math.floor((dateChosen - dateActual) / 1000);
-  let dateLeftDays = Math.floor(dateDifferenceSeconds / (24 * 60 * 60));
-  let dateLeftSeconds = dateDifferenceSeconds - dateLeftDays * 24 * 60 * 60;
-  let dateLeftHours = Math.floor(dateLeftSeconds / (60 * 60));
-  dateLeftSeconds = dateLeftSeconds - dateLeftHours * (60 * 60);
-  let dateLeftMinutes = Math.floor(dateLeftSeconds / 60);
-  dateLeftSeconds = dateLeftSeconds - dateLeftMinutes * 60;
-  dateDays.textContent = dateLeftDays;
-  dateHours.textContent = dateLeftHours;
-  dateMinutes.textContent = dateLeftMinutes;
-  dateSeconds.textContent = dateLeftSeconds;
+  let dateDifference = dateChosen - dateActual;
+  dateDays.textContent = addLeadingZero(convertMs(dateDifference).days);
+  dateHours.textContent = addLeadingZero(convertMs(dateDifference).hours);
+  dateMinutes.textContent = addLeadingZero(convertMs(dateDifference).minutes);
+  dateSeconds.textContent = addLeadingZero(convertMs(dateDifference).seconds);
+  if (Math.floor(dateDifference / 1000) == 0) {
+    dateInput.disabled = false;
+    calendar.setDate(new Date());
+    clearInterval(dateTimer);
+    setTimeout(() => {
+      Notiflix.Notify.success('Congratulations, you won a new Iphone!');
+    }, 200);
+  }
+}
+function convertMs(ms) {
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
+  const days = Math.floor(ms / day);
+  const hours = Math.floor((ms % day) / hour);
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+
+  return { days, hours, minutes, seconds };
+}
+function addLeadingZero(value) {
+  return `${value}`.padStart(2, '0');
 }

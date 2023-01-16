@@ -30,3 +30,24 @@ img {
   background-color: rgb(225, 109, 19);
   border-radius: 5px;
 }
+.timer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: left;
+  grid-gap: 10px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.value {
+  font-size: 40px;
+  font-weight: 500;
+}
+.label {
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 500;
+}
