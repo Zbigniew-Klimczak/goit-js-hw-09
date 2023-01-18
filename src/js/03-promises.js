@@ -21,7 +21,7 @@ button.addEventListener('click', evt => {
               `❌ Rejected promise ${position} in ${delay}ms`
             );
           });
-      }, parseInt(delayInput.value) * (i - 1));
+      }, delayInput.value * (i - 1));
     }
   }, firstDelayInput.value);
 });
